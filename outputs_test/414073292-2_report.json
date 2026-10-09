@@ -1,0 +1,120 @@
+{
+  "meta": {
+    "drawing": "C:\\Users\\ASUS\\Desktop\\414073292-2.pdf",
+    "bom": "C:\\Users\\ASUS\\Desktop\\economiser_assembly_bom.xlsx",
+    "bom_revision": "D"
+  },
+  "reliability": "HIGH",
+  "reliability_reasons": [],
+  "drawing_revision": null,
+  "bom_revision": "D",
+  "scanned": false,
+  "completeness": 100.0,
+  "n_drawing_items": 17,
+  "n_bom_rows": 17,
+  "matches": [
+    {
+      "drawing_id": "?",
+      "bom_row": 22,
+      "score": 100.0,
+      "status": "OK"
+    },
+    {
+      "drawing_id": "?",
+      "bom_row": 21,
+      "score": 100.0,
+      "status": "OK"
+    },
+    {
+      "drawing_id": "?",
+      "bom_row": 20,
+      "score": 100.0,
+      "status": "OK"
+    },
+    {
+      "drawing_id": "?",
+      "bom_row": 19,
+      "score": 100.0,
+      "status": "OK"
+    },
+    {
+      "drawing_id": "?",
+      "bom_row": 18,
+      "score": 100.0,
+      "status": "OK"
+    },
+    {
+      "drawing_id": "?",
+      "bom_row": 17,
+      "score": 100.0,
+      "status": "OK"
+    },
+    {
+      "drawing_id": "?",
+      "bom_row": 16,
+      "score": 100.0,
+      "status": "OK"
+    },
+    {
+      "drawing_id": "?",
+      "bom_row": 15,
+      "score": 100.0,
+      "status": "OK"
+    },
+    {
+      "drawing_id": "?",
+      "bom_row": 14,
+      "score": 100.0,
+      "status": "OK"
+    },
+    {
+      "drawing_id": "?",
+      "bom_row": 13,
+      "score": 100.0,
+      "status": "OK"
+    },
+    {
+      "drawing_id": "?",
+      "bom_row": 12,
+      "score": 100.0,
+      "status": "OK"
+    },
+    {
+      "drawing_id": "?",
+      "bom_row": 11,
+      "score": 100.0,
+      "status": "OK"
+    },
+    {
+      "drawing_id": "?",
+      "bom_row": 10,
+      "score": 100.0,
+      "status": "OK"
+    },
+    {
+      "drawing_id": "?",
+      "bom_row": 9,
+      "score": 100.0,
+      "status": "OK"
+    },
+    {
+      "drawing_id": "?",
+      "bom_row": 8,
+      "score": 100.0,
+      "status": "OK"
+    },
+    {
+      "drawing_id": "?",
+      "bom_row": 7,
+      "score": 100.0,
+      "status": "OK"
+    },
+    {
+      "drawing_id": "?",
+      "bom_row": 6,
+      "score": 100.0,
+      "status": "OK"
+    }
+  ],
+  "issues": []
+}

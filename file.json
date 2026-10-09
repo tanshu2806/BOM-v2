@@ -1,0 +1,38 @@
+{
+  "header_synonyms": {
+    "description": [
+      "description",
+      "part name",
+      "item description",
+      "component name"
+    ],
+    "qty": [
+      "qty",
+      "quantity",
+      "qty.",
+      "required quantity"
+    ],
+    "part_no": [
+      "part no",
+      "part number",
+      "item no",
+      "item number",
+      "sr no",
+      "sr. no."
+    ],
+    "material": [
+      "material",
+      "material grade"
+    ],
+    "specification": [
+      "specification",
+      "specification / size",
+      "size",
+      "dimensions"
+    ],
+    "remarks": [
+      "remarks",
+      "notes"
+    ]
+  }
+}

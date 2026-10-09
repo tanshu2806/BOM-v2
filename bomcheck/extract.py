@@ -280,9 +280,12 @@ def parse_table(words, cfg, region_left=None, fuzzy=False, grid_x=None):
             bounds.append((canon, left, right))
     table_left = bounds[0][1]
     below = [L for L in lines if L["yc"] > hline["yc"] + 1]
-    # keep only words that sit inside the table's x range
-    for L in below:
+    above = [L for L in lines if L["yc"] < hline["yc"] - 1]
+    # keep only words that sit inside the table's x range; some real assembly drawings
+    # place the BOM rows above the header, while others put them below it.
+    for L in above + below:
         L["words"] = [w for w in L["words"] if w["x0"] >= table_left]
+    above = [L for L in above if L["words"]]
     below = [L for L in below if L["words"]]
 
     def cell_text(L, i):
@@ -292,23 +295,53 @@ def parse_table(words, cfg, region_left=None, fuzzy=False, grid_x=None):
 
     item_i = next((i for i, b in enumerate(bounds) if b[0] == "item"), 0)
     qty_i = next((i for i, b in enumerate(bounds) if b[0] == "qty"), None)
+
+    def split_item_and_description(item_txt, desc_txt):
+        item_txt = (item_txt or "").strip()
+        desc_txt = (desc_txt or "").strip()
+        if not item_txt:
+            return "", desc_txt
+
+        # Real drawing tables often jam the item number and part name into the same cell
+        # (for example: "17 NUT" or "7 6 OUTPUT SHAFT"). Extract the last numeric token
+        # as the item id and treat the remainder as the description text.
+        nums = re.findall(r"\d+", item_txt)
+        if nums:
+            item_id = nums[-1]
+            rest = re.sub(r"\d+", " ", item_txt).strip()
+            desc = rest if rest else desc_txt
+            if desc_txt and desc and desc_txt not in desc:
+                desc = (desc + " " + desc_txt).strip()
+            return item_id, desc
+
+        m = re.match(r"^([A-Za-z]?\d{1,3}[A-Za-z]?)(?:\s+(.*))?$", item_txt)
+        if m:
+            item_id, rest = m.group(1), (m.group(2) or "").strip()
+            desc = rest or desc_txt
+            if desc_txt and desc and desc_txt not in desc:
+                desc = (desc + " " + desc_txt).strip()
+            return item_id, desc
+
+        return item_txt, desc_txt
+
     rows, prev_yc, pitches = [], hline["yc"], []
-    for L in below:
+    candidates = sorted((above + below), key=lambda L: L["yc"])
+    for L in candidates:
         gap = L["yc"] - prev_yc
         if pitches and gap > 2.2 * statistics.median(pitches):
-            break                                   # table ended (gap to next text block)
+            break
         item_txt = cell_text(L, item_i)[0].strip()
         has_qty = qty_i is not None and bool(cell_text(L, qty_i)[0].strip())
         id_ok = bool(ITEM_RE.match(item_txt))
-        if id_ok or has_qty:                        # a line with a quantity is a row even if OCR garbled its item number
+        if id_ok or has_qty:
             r = dict(fields={}, words=[], y0=1e9, y1=0, id_unreadable=not id_ok)
             rows.append(r)
             if prev_yc != hline["yc"]:
                 pitches.append(gap)
         elif rows and not item_txt and (not pitches or gap <= 1.4 * statistics.median(pitches)):
-            r = rows[-1]                            # continuation line (wrapped cell)
+            r = rows[-1]
         else:
-            break
+            continue
         for i, (canon, _, _) in enumerate(bounds):
             txt, ws = cell_text(L, i)
             if txt:
@@ -324,14 +357,16 @@ def parse_table(words, cfg, region_left=None, fuzzy=False, grid_x=None):
     last_num = None
     for r in rows:
         f = r["fields"]
-        rid = f.get("item", "").strip()
+        item_txt = f.get("item", "").strip()
+        desc_txt = f.get("description", "").strip()
+        rid, desc = split_item_and_description(item_txt, desc_txt)
         inferred = False
         if r["id_unreadable"]:
             rid = str(last_num + 1) if last_num is not None else "?"
             inferred = True
         if rid.isdigit():
             last_num = int(rid)
-        out.append(dict(id=rid, id_inferred=inferred, description=f.get("description", ""), material=f.get("material", ""),
+        out.append(dict(id=rid, id_inferred=inferred, description=desc, material=f.get("material", ""),
                         size=f.get("size", ""), qty=f.get("qty", ""), partno=f.get("partno", ""), remarks=f.get("remarks", ""),
                         bbox=(table_left - 1, r["y0"] - 1.5, right, r["y1"] + 1.5),
                         conf=min(w["conf"] for w in r["words"])))
